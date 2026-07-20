@@ -1,26 +1,24 @@
-import asyncio
 import os
 import discord
-from discord.ext import commands
 
 CHANNEL_ID = 1517270182089719868
 
-class MyClient(commands.Bot):
-    def __init__(self):
-        super().__init__(command_prefix="!", self_bot=True, intents=discord.Intents.default())
-
+class MyClient(discord.Client):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
 
     async def on_message(self, message):
-        if message.author == self.user and message.content == "!startpacks":
-            channel = message.channel
-            commands_list = await channel.application_commands()
-            for cmd in commands_list:
-                if cmd.name == "packs":
-                    await cmd(channel=channel, packs=75, fast_open=True)
-                    break
-        await self.process_commands(message)
+        if message.author.id == self.user.id and message.content == "!startpacks":
+            channel = self.get_channel(CHANNEL_ID) or message.channel
+            try:
+                commands = await channel.application_commands()
+                for cmd in commands:
+                    if cmd.name == "packs":
+                        await cmd.invoke(channel, packs=75, fast_open=True)
+                        print("Command triggered successfully!")
+                        break
+            except Exception as e:
+                print(f"Error triggering command: {e}")
 
-client = MyClient()
-client.run(os.getenv("USER_TOKEN"))
+client = MyClient(intents=discord.Intents.default())
+client.run(os.getenv("USER_TOKEN"), bot=False)
