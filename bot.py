@@ -1,4 +1,5 @@
 import asyncio
+import os
 import discord
 
 CHANNEL_ID = 1517270182089719868
@@ -14,4 +15,4 @@ class MyClient(discord.Client):
                     break
 
 client = MyClient()
-client.run("YOUR_USER_TOKEN", bot=False)
+client.run(os.getenv("USER_TOKEN"), bot=False)
