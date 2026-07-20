@@ -21,4 +21,4 @@ class MyClient(discord.Client):
                 print(f"Error triggering command: {e}")
 
 client = MyClient()
-client.run(os.getenv("USER_TOKEN"), bot=False)
+client.run(os.getenv("USER_TOKEN"))
