@@ -20,15 +20,27 @@ class MyClient(discord.Client):
 
     async def on_message(self, message):
         if message.author.id == self.user.id and message.content == "!startpacks":
-            channel = self.get_channel(CHANNEL_ID) or message.channel
+            print("!startpacks triggered, checking channel...")
+            channel = self.get_channel(CHANNEL_ID)
+            if not channel:
+                channel = await self.fetch_channel(CHANNEL_ID)
+            
             try:
                 commands = await channel.application_commands()
                 for cmd in commands:
                     if cmd.name == "packs":
-                        await cmd.invoke(channel, packs=75, fast_open=True)
-                        break
-            except Exception:
-                pass
+                        print("Found /packs command. Attempting to execute...")
+                        
+                        # Targets the specific 'multipackly' subcommand if it exists
+                        target_cmd = next((c for c in cmd.children if c.name == "multipackly"), cmd)
+                        
+                        await target_cmd(channel=channel, packs=75, fast_open=True)
+                        print("Command sent successfully!")
+                        return
+                        
+                print("Could not find the /packs command in this channel.")
+            except Exception as e:
+                print(f"Error triggering command: {e}")
 
 Thread(target=run_server).start()
 client = MyClient()
