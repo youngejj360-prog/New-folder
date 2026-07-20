@@ -20,5 +20,5 @@ class MyClient(discord.Client):
             except Exception as e:
                 print(f"Error triggering command: {e}")
 
-client = MyClient(intents=discord.Intents.default())
+client = MyClient()
 client.run(os.getenv("USER_TOKEN"), bot=False)
