@@ -43,14 +43,14 @@ class MyClient(discord.Client):
                         if cmd.name == "packs":
                             target_cmd = next((c for c in cmd.children if c.name == "multipackly"), cmd)
                             await target_cmd(channel=channel, packs=75, fast_open=True)
-                            print("Command sent. Waiting 16 seconds...")
+                            print("Command sent. Waiting 7 seconds...")
                             break
                 except Exception as e:
                     print(f"Error: {e}")
                 
                 # Wait 16 seconds before the next loop
                 if self.is_running:
-                    await asyncio.sleep(16)
+                    await asyncio.sleep(7)
 
         elif message.content == "!stoppacks":
             self.is_running = False
