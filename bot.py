@@ -41,14 +41,26 @@ class MyClient(discord.Client):
                     commands = await channel.application_commands()
                     for cmd in commands:
                         if cmd.name == "packs":
-                            target_cmd = next((c for c in cmd.children if c.name == "multipackly"), cmd)
-                            await target_cmd(channel=channel, packs=75, fast_open=True)
-                            print("Command sent. Waiting 7 seconds...")
+                            target_cmd = None
+                            for child in cmd.children:
+                                if child.name == "multipackly":
+                                    target_cmd = child
+                                    break
+                                elif hasattr(child, 'children'):
+                                    for subchild in child.children:
+                                        if subchild.name == "multipackly":
+                                            target_cmd = subchild
+                                            break
+
+                            if target_cmd:
+                                await target_cmd(channel=channel, packs=75, fast_open=True)
+                                print("Command sent. Waiting 7 seconds...")
+                            else:
+                                print("Subcommand 'multipackly' not found in this pass. Retrying...")
                             break
                 except Exception as e:
                     print(f"Error: {e}")
                 
-                # Wait 16 seconds before the next loop
                 if self.is_running:
                     await asyncio.sleep(7)
 
